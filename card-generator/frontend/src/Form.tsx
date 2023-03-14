@@ -23,6 +23,7 @@ const Form: FC = () => {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<FormType>();
 
   const onSubmit = (data: FormType) => {
@@ -86,7 +87,11 @@ const Form: FC = () => {
           <input type="submit" className="hidden" />
         </label>
 
-        <button type="button" className={buttonClassNameSecondary}>
+        <button
+          type="button"
+          className={buttonClassNameSecondary}
+          onClick={() => reset()}
+        >
           リセット
         </button>
       </div>
