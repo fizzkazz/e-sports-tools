@@ -46,8 +46,6 @@ const Form: FC = () => {
       <div className="p-5 bg-red-100 flex flex-col gap-3">
         <LeftInputMember index={0} register={register} errors={errors} />
         <LeftInputMember index={1} register={register} errors={errors} />
-        <LeftInputMember index={2} register={register} errors={errors} />
-        <LeftInputMember index={3} register={register} errors={errors} />
       </div>
       <div className="p-5 bg-blue-100 flex flex-col gap-3">
         <RightInputMember index={0} register={register} errors={errors} />

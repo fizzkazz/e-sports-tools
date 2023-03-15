@@ -18,9 +18,6 @@ const MultipleCardView: FC = () => {
   const leftMembers = extractMembers(leftParams);
   const rightMembers = extractMembers(rightParams);
 
-  const columns = Math.min(leftMembers.length, 4);
-  const rows = Math.ceil(leftMembers.length / columns);
-
   return (
     <>
       <div className="flex justify-center items-center bg-black">
