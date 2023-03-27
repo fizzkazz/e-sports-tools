@@ -1,22 +1,26 @@
-import { FC } from "react";
-import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { FC } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FieldErrors, useForm, UseFormRegister } from 'react-hook-form';
 
 interface FormType {
-  leftname: string;
-  lefturl: string;
-  rightname: string;
-  righturl: string;
+  left: Member[];
+  right: Member[];
 }
 
-const inputClassName = "p-3 border border-neutral-200 rounded-lg";
-const buttonClassNamePrimary =
-  "px-3 py-2 rounded-lg bg-neutral-700 text-white font-bold w-max cursor-pointer";
-const buttonClassNameSecondary =
-  "px-3 py-2 border-2 border-neutral-200 rounded-lg text-neutral-500 font-bold w-max cursor-pointer";
-const errorMessageClassName = "text-red-900";
+interface InputProps {
+  index: number;
+  register: UseFormRegister<FormType>;
+  errors: FieldErrors<FormType>;
+}
 
-const requiredMessage = "入力必須です";
+const inputClassName = 'p-3 border border-neutral-200 rounded-lg';
+const buttonClassNamePrimary =
+  'px-3 py-2 rounded-lg bg-neutral-700 text-white font-bold w-max cursor-pointer';
+const buttonClassNameSecondary =
+  'px-3 py-2 border-2 border-neutral-200 rounded-lg text-neutral-500 font-bold w-max cursor-pointer';
+const errorMessageClassName = 'text-red-900';
+
+const requiredMessage = '入力必須です';
 
 const Form: FC = () => {
   const {
@@ -27,58 +31,25 @@ const Form: FC = () => {
   } = useForm<FormType>();
 
   const onSubmit = (data: FormType) => {
+    const left = btoa(JSON.stringify([...data.left]));
+    const right = btoa(JSON.stringify([...data.right]));
+
     const builtParams = new URLSearchParams({
-      leftname: data.leftname,
-      lefturl: data.lefturl,
-      rightname: data.rightname,
-      righturl: data.righturl,
+      left: left,
+      right: right,
     }).toString();
-    window.open("/cardview?" + builtParams, "_blank");
+    window.open('/multiple?' + builtParams, '_blank');
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="p-5 bg-red-100 flex flex-col gap-3">
-        <p className="font-bold">プレイヤー1</p>
-        <input
-          type="text"
-          placeholder="ニックネーム"
-          className={inputClassName}
-          {...register("leftname", { required: requiredMessage })}
-        />
-        {errors.leftname && (
-          <p className={errorMessageClassName}>{errors.leftname.message}</p>
-        )}
-        <input
-          type="text"
-          placeholder="画像URL"
-          className={inputClassName}
-          {...register("lefturl", { required: requiredMessage })}
-        />
-        {errors.lefturl && (
-          <p className={errorMessageClassName}>{errors.lefturl.message}</p>
-        )}
+        <LeftInputMember index={0} register={register} errors={errors} />
+        <LeftInputMember index={1} register={register} errors={errors} />
       </div>
       <div className="p-5 bg-blue-100 flex flex-col gap-3">
-        <p className="font-bold">プレイヤー2</p>
-        <input
-          type="text"
-          placeholder="ニックネーム"
-          className={inputClassName}
-          {...register("rightname", { required: requiredMessage })}
-        />
-        {errors.rightname && (
-          <p className={errorMessageClassName}>{errors.rightname.message}</p>
-        )}
-        <input
-          type="text"
-          placeholder="画像URL"
-          className={inputClassName}
-          {...register("righturl", { required: requiredMessage })}
-        />
-        {errors.righturl && (
-          <p className={errorMessageClassName}>{errors.righturl.message}</p>
-        )}
+        <RightInputMember index={0} register={register} errors={errors} />
+        <RightInputMember index={1} register={register} errors={errors} />
       </div>
 
       <div className="m-4 flex gap-4">
@@ -98,4 +69,69 @@ const Form: FC = () => {
     </form>
   );
 };
+
+const LeftInputMember: FC<InputProps> = ({ index, register, errors }) => {
+  return (
+    <>
+      <p className="font-bold">左側プレイヤー{index}</p>
+      <input
+        type="text"
+        placeholder="ニックネーム"
+        className={inputClassName}
+        {...register(
+          `left.${index}.name`,
+          index === 0 ? { required: requiredMessage } : undefined
+        )}
+      />
+      {errors.left && (
+        <p className={errorMessageClassName}>{errors.left.message}</p>
+      )}
+      <input
+        type="text"
+        placeholder="画像URL"
+        className={inputClassName}
+        {...register(
+          `left.${index}.url`,
+          index === 0 ? { required: requiredMessage } : undefined
+        )}
+      />
+      {errors.left && (
+        <p className={errorMessageClassName}>{errors.left.message}</p>
+      )}
+    </>
+  );
+};
+
+const RightInputMember: FC<InputProps> = ({ index, register, errors }) => {
+  return (
+    <>
+      <p className="font-bold">右側プレイヤー{index}</p>
+      <input
+        type="text"
+        placeholder="ニックネーム"
+        className={inputClassName}
+        {...register(
+          `right.${index}.name`,
+          index === 0 ? { required: requiredMessage } : undefined
+        )}
+      />
+      {errors.right && (
+        <p className={errorMessageClassName}>{errors.right.message}</p>
+      )}
+      <input
+        type="text"
+        placeholder="画像URL"
+        className={inputClassName}
+        {...register(
+          `right.${index}.url`,
+          index === 0 ? { required: requiredMessage } : undefined
+        )}
+      />
+      {errors.right && (
+        <p className={errorMessageClassName}>{errors.right.message}</p>
+      )}
+    </>
+  );
+};
+
 export default Form;
