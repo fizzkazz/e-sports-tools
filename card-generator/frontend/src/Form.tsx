@@ -6,7 +6,6 @@ import { Member } from "./member";
 interface FormType {
   left: Member[];
   right: Member[];
-  vertical: boolean;
 }
 
 interface InputProps {
@@ -35,12 +34,10 @@ const Form: FC = () => {
   const onSubmit = (data: FormType) => {
     const left = btoa(JSON.stringify([...data.left]));
     const right = btoa(JSON.stringify([...data.right]));
-    const vertical = data.vertical;
 
     const builtParams = new URLSearchParams({
       left: left,
       right: right,
-      vertical: `${vertical}`,
     }).toString();
     window.open("/multiple?" + builtParams, "_blank");
   };
@@ -54,19 +51,6 @@ const Form: FC = () => {
       <div className="p-5 bg-blue-100 flex flex-col gap-3">
         <RightInputMember index={0} register={register} errors={errors} />
         <RightInputMember index={1} register={register} errors={errors} />
-      </div>
-      <div>Vertical:</div>
-      <div>
-        <label>
-          <input type="radio" value="true" {...register("vertical")} />
-          true
-        </label>
-      </div>
-      <div>
-        <label>
-          <input type="radio" value="false" {...register("vertical")} />
-          false
-        </label>
       </div>
 
       <div className="m-4 flex gap-4">
