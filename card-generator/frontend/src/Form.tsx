@@ -1,7 +1,8 @@
-import { FC } from "react";
+import { ChangeEvent, FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Member } from "./member";
 import NameUrlInputPair from "./NameUrlInputPair";
+import { CSVItem, csvToObject, fetchCSV } from "./fetchCSV";
 
 interface FormType {
   left: Member[];
@@ -19,11 +20,25 @@ const Form: FC = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm<FormType>();
+  const [csvData, setCsvData] = useState<CSVItem[]>([]);
+
+  const handleFileSelect = async (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      const csvText = await fetchCSV(file);
+      const csv = csvToObject(csvText);
+      setCsvData(csv);
+    }
+  };
 
   const onSubmit = (data: FormType) => {
     const left = btoa(JSON.stringify([...data.left]));
     const right = btoa(JSON.stringify([...data.right]));
+
+    console.log(data.left);
+    console.log(data.right);
 
     const builtParams = new URLSearchParams({
       left: left,
@@ -33,55 +48,64 @@ const Form: FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="p-5 bg-red-100 flex flex-col gap-3">
-        <NameUrlInputPair
-          csvData={[]}
-          side="left"
-          index={0}
-          register={register}
-          errors={errors}
-        />
-        <NameUrlInputPair
-          csvData={[]}
-          side="left"
-          index={1}
-          register={register}
-          errors={errors}
-        />
-      </div>
-      <div className="p-5 bg-blue-100 flex flex-col gap-3">
-        <NameUrlInputPair
-          csvData={[]}
-          side="right"
-          index={0}
-          register={register}
-          errors={errors}
-        />
-        <NameUrlInputPair
-          csvData={[]}
-          side="right"
-          index={1}
-          register={register}
-          errors={errors}
-        />
-      </div>
+    <>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="p-5 bg-red-100 flex flex-col gap-3">
+          <NameUrlInputPair
+            csvData={csvData}
+            side="left"
+            index={0}
+            register={register}
+            errors={errors}
+            setValue={setValue}
+          />
+          <NameUrlInputPair
+            csvData={csvData}
+            side="left"
+            index={1}
+            register={register}
+            errors={errors}
+            setValue={setValue}
+          />
+        </div>
+        <div className="p-5 bg-blue-100 flex flex-col gap-3">
+          <NameUrlInputPair
+            csvData={csvData}
+            side="right"
+            index={0}
+            register={register}
+            errors={errors}
+            setValue={setValue}
+          />
+          <NameUrlInputPair
+            csvData={csvData}
+            side="right"
+            index={1}
+            register={register}
+            errors={errors}
+            setValue={setValue}
+          />
+        </div>
 
-      <div className="m-4 flex gap-4">
-        <label>
-          <p className={buttonClassNamePrimary}>対戦カードを生成</p>
-          <input type="submit" className="hidden" />
-        </label>
+        <div className="m-4 flex gap-4">
+          <label>
+            <p className={buttonClassNamePrimary}>対戦カードを生成</p>
+            <input type="submit" className="hidden" />
+          </label>
 
-        <button
-          type="button"
-          className={buttonClassNameSecondary}
-          onClick={() => reset()}
-        >
-          リセット
-        </button>
+          <button
+            type="button"
+            className={buttonClassNameSecondary}
+            onClick={() => reset()}
+          >
+            リセット
+          </button>
+        </div>
+      </form>
+      <div>
+        <input type="file" accept=".csv" onChange={handleFileSelect} />
       </div>
-    </form>
+    </>
   );
 };
 

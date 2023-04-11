@@ -1,16 +1,18 @@
 import { FC, useState, ChangeEvent } from "react";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import {
+  FieldErrors,
+  UseFormRegister,
+  UseFormSetValue,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
 import { Member } from "./member";
+import { CSVItem } from "./fetchCSV";
 
 interface FormType {
   left: Member[];
   right: Member[];
 }
-
-type CSVItem = {
-  name: string;
-  url: string;
-};
 
 type Side = "left" | "right";
 
@@ -20,6 +22,7 @@ type NameUrlInputPairProps = {
   index: number;
   register: UseFormRegister<FormType>;
   errors: FieldErrors<FormType>;
+  setValue: UseFormSetValue<FormType>;
 };
 
 type VariantProps = {
@@ -38,6 +41,7 @@ const NameUrlInputPair: FC<NameUrlInputPairProps> = ({
   index,
   register,
   errors,
+  setValue,
 }) => {
   const [selectedName, setSelectedName] = useState<string>("");
   const [selectedUrl, setSelectedUrl] = useState<string>("");
@@ -47,7 +51,9 @@ const NameUrlInputPair: FC<NameUrlInputPairProps> = ({
     const selectedItem = csvData.find(
       (item) => item.name === event.target.value
     );
-    setSelectedUrl(selectedItem ? selectedItem.url : selectedUrl);
+    const newUrl = selectedItem ? selectedItem.url : selectedUrl;
+    setSelectedUrl(newUrl);
+    setValue(`${side}.${index}.url`, newUrl);
   };
 
   const handleUrlInput = (event: ChangeEvent<HTMLInputElement>) => {
