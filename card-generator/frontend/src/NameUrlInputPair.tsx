@@ -101,10 +101,7 @@ const NameUrlInputPair: FC<NameUrlInputPairProps> = ({
         value={selectedUrl}
         placeholder="画像URL"
         className={inputClassName}
-        {...register(
-          `${side}.${index}.url`,
-          index === 0 ? { required: requiredMessage } : undefined
-        )}
+        {...register(`${side}.${index}.url`)}
         onChange={handleUrlInput}
       />
       {error && <p className={errorMessageClassName}>{error.message}</p>}

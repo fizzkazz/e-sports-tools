@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Member } from "./member";
+import { AutoSizedText } from "./AutoSizedText";
 
 const MultipleCardView: FC = () => {
   const [searchParams] = useSearchParams();
@@ -13,7 +14,7 @@ const MultipleCardView: FC = () => {
 
   const extractMembers = (rawMembers: string) => {
     const members = JSON.parse(atob(rawMembers)) as Member[];
-    return members.filter((m) => m.name !== "" && m.url !== "");
+    return members.filter((m) => m.name !== "");
   };
 
   const leftMembers = extractMembers(leftParams);
@@ -61,16 +62,16 @@ const _CardView: FC<Member> = ({
   url: string;
   variant: keyof typeof cardViewVariants | null;
 }) => {
+  const imageUrl = url === "" ? "default_avatar.png" : url;
   return (
     <div className="relative h-screen flex justify-center">
-      <img src={url} alt="Left Image" />
-      <p
-        className={`absolute top-5 left-0 w-full z-5 p-5 text-white text-center -skew-y-6 text-5xl drop-shadow-2xl ${
+      <img src={imageUrl} alt="Image" />
+      <AutoSizedText
+        text={name}
+        className={`absolute top-5 left-0 w-full z-5 p-2 text-white text-center -skew-y-6 text-5xl drop-shadow-2xl ${
           cardViewVariants[variant ?? "red"].bg
         }`}
-      >
-        {name}
-      </p>
+      ></AutoSizedText>
     </div>
   );
 };
