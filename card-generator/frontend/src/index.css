@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.scroll-background {
+  background-image: url("bg.png");
+  background-color: white;
+  background-repeat: repeat;
+  background-position: 0 0;
+  animation: diagonalScroll 80s linear infinite;
+}
+
+@keyframes diagonalScroll {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 70% -100%;
+  }
+}
